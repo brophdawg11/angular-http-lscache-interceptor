@@ -4,10 +4,9 @@ module.exports = function(config){
     basePath : './',
 
     files: [
-      'bower/angular/angular.js',
-      'bower/angular-mocks/angular-mocks.js',
+      'bower_components/angular/angular.js',
+      'bower_components/angular-mocks/angular-mocks.js',
       'src/*.js',
-      'test/app.js',
       'test/karma-spec.js'
     ],
 

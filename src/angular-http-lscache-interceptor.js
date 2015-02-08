@@ -98,6 +98,10 @@
           // We failed for another reason, and did not have valid cached data.
           // Look for expired cache data as a last resort
           cachedData = lscacheExtra.get(getCacheKey(rejection.config), true, true);
+
+          if (cachedData) {
+            rejection.config.lscacheExtra.resultWasExpired = true;
+          }
         }
 
         // If available, use the cachedData we looked up in request(), which
@@ -105,6 +109,7 @@
         if (cachedData) {
           // Clean up after ourselves
           delete rejection.config.lscacheExtra.cachedData;
+          rejection.config.lscacheExtra.resultWasCached = true;
           dfd = $q.defer();
           dfd.resolve(generateResponse(cachedData, rejection.config));
           return dfd.promise;

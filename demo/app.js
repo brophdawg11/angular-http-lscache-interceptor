@@ -13,11 +13,11 @@
     }
 
     $scope.data = 'Loading...';
-    keySvc.post().then(success, err);
+    keySvc.get().then(success, err);
 
     $timeout(function () {
       $scope.data = 'Loading again...';
-      keySvc.post().then(success, err);
+      keySvc.get().then(success, err);
     }, 2000);
   }]);
 
@@ -45,7 +45,7 @@
           }
         };
 
-        $http.get('./data.json', config)
+        $http.get('/demo/data.json', config)
              .then(success, err);
       });
     };
