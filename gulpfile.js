@@ -2,12 +2,19 @@ var args = require('yargs').argv,
     gulp = require('gulp');
 
 // Clean then build
-gulp.task('build', function (cb) {
+gulp.task('release', function (cb) {
   var runSequence = require('run-sequence');
   runSequence('clean',
               'minify',
               'test',
               'bump-version',
+              cb);
+});
+
+gulp.task('build', function (cb) {
+  var runSequence = require('run-sequence');
+  runSequence('clean',
+              'minify',
               cb);
 });
 
