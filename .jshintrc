@@ -1,0 +1,44 @@
+{
+    "asi"          : false,  // Require semicolons
+    "boss"         : false,  // Don't allow variable assignments in conditionals
+    "browser"      : true,   // Standard browser globals should be predefined
+    "curly"        : true,   // Require curly braces for blocks (if, else, etc)
+    "eqeqeq"       : true,   // === should be required
+    "eqnull"       : true,   // == null comparisons should be tolerated
+    "evil"         : true,   // Use of eval is ok
+    "indent"       : 2,      // 4 spaces, soft-tabs
+    "latedef"      : true,   // Prohibit use of var before definition
+    "laxcomma"     : false,  // Commas must be on the end of a line, not the beginning of the next
+    "loopfunc"     : false,  // Functions can not be declared within a loop.
+                             // Unsure of whether this should be enforced.
+    "phantom"      : true,   // PhantomJS symbols are allowed
+    "node"         : true,   // NodeJS symbols are allowed
+    "proto"        : true,   // Suppress __proto__ warnings
+    "regexdash"    : true,   // First/last dash (-) is allowed
+    "sub"          : true,   // Allow arr['key'] instead of arr.key
+    "trailing"     : true,   // Error on trailing whitespace
+    "undef"        : true,   // Prohibit undeclared var usage
+    "unused"       : "vars", // Warn on unused vars only, not function params
+    "white"        : true,   // Strict whitespace rule checking
+    "onevar"       : true,   // Only one var at the top of each function,
+    "quotmark"     : false,  // Don't warn on mixed quotes
+    "globalstrict" : false,  // Dont require global "use strict"
+    "globals": {
+        // Libs
+
+        // Development
+        "console": false,
+
+        // Testing
+        "it": false,
+        "expect": false,
+        "describe": false,
+        "beforeEach": false,
+        "afterEach": false,
+        "inject": false,
+        "spyOn": false,
+
+        // App Globals
+        "angular": false
+    }
+}
