@@ -3,11 +3,16 @@ module.exports = function(config){
 
     basePath : './',
 
+    client: {
+      captureConsole: false
+    },
+
     files: [
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
+      'bower_components/lscache-extra/lscache-extra.js',
       'src/*.js',
-      'test/karma-spec.js'
+      'test/*.js'
     ],
 
     frameworks: [ 'jasmine' ],
