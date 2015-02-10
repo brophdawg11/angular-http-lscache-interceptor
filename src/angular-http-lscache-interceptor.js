@@ -1,16 +1,8 @@
 ;(function () {
 
-  var module = window.angular.module('http-lscache-interceptor', []);
+  var module = window.angular.module('http-lscache-interceptor', [ 'lscacheExtra' ]);
 
-  module.factory('http-lscache-interceptor', [ '$q', '$log', function ($q, $log) {
-
-    var lscacheExtra = window.lscacheExtra;
-
-    if (!lscacheExtra) {
-      $log.error('http-cache-interceptor exiting because ' +
-                 'window.lscacheExtra is undefined');
-      return {};
-    }
+  module.factory('http-lscache-interceptor', [ '$q', '$log', 'lscacheExtra', function ($q, $log, lscacheExtra) {
 
     function getCacheKey(config) {
       var cacheKey;
