@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "bower install && gulp test"
   },
   "repository": {
     "type": "git",
