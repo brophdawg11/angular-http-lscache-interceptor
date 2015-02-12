@@ -1,0 +1,3 @@
+![Build Status](https://travis-ci.org/brophdawg11/angular-http-lscache-interceptor.svg?branch=master)
+
+Coming soon...
