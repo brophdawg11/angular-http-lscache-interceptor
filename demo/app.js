@@ -24,7 +24,18 @@
   app.service('keySvc', [ '$http', '$q', function ($http, $q) {
     this.get = function () {
       return $q(function (resolve, reject) {
-        function success(d) {
+        function success1(d) {
+          console.log('request 1 cb');
+          resolve(d.data);
+        }
+
+        function success2(d) {
+          console.log('request 2 cb');
+          resolve(d.data);
+        }
+
+        function success3(d) {
+          console.log('request 3 cb');
           resolve(d.data);
         }
 
@@ -46,7 +57,13 @@
         };
 
         $http.get('/demo/data.json', config)
-             .then(success, err);
+             .then(success1, err);
+
+        $http.get('/demo/data.json', config)
+             .then(success2, err);
+
+        $http.get('/demo/data.json', config)
+             .then(success3, err);
       });
     };
 

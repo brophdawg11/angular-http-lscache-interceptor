@@ -2,7 +2,9 @@
 
   var module = window.angular.module('http-lscache-interceptor', [ 'lscacheExtra' ]);
 
-  module.factory('http-lscache-interceptor', [ '$q', '$log', 'lscacheExtra', function ($q, $log, lscacheExtra) {
+  module.constant('pendingRequests', {});
+
+  module.factory('http-lscache-interceptor', [ '$q', '$log', 'lscacheExtra', 'pendingRequests', function ($q, $log, lscacheExtra, pendingRequests) {
 
     function getCacheKey(config) {
       var cacheKey;
@@ -54,6 +56,17 @@
             dfd = $q.defer();
             dfd.resolve();
             config.timeout = dfd.promise;
+          } else if (cacheKey in pendingRequests) {
+            // This exact same request has already been sent, so avoid sending
+            // a dup request and set up to listen for that response
+            config.lscacheExtra.pending = true;
+            dfd = $q.defer();
+            dfd.resolve();
+            config.timeout = dfd.promise;
+          } else {
+            // We're about to launch this request, indicate that in
+            // pendingRequests
+            pendingRequests[cacheKey] = [];
           }
         }
 
@@ -62,6 +75,7 @@
 
       response: function (response) {
         var ttl,
+            cacheKey,
             lsConfig = response.config.lscacheExtra;
 
         if (lsConfig) {
@@ -70,44 +84,67 @@
             lscacheExtra.setExpiryUnitMs(lsConfig.ttlUnitMs);
           }
 
+          cacheKey = getCacheKey(response.config);
+
           // Default 10 unit expiration
           ttl = lsConfig.ttl || 10;
 
           // Cache result
-          lscacheExtra.set(getCacheKey(response.config), response.data, ttl);
+          lscacheExtra.set(cacheKey, response.data, ttl);
+
+          if (cacheKey in pendingRequests) {
+            while (pendingRequests[cacheKey].length > 0) {
+              pendingRequests[cacheKey].shift().resolve(response);
+            }
+            delete pendingRequests[cacheKey];
+          }
         }
 
         return response;
       },
 
       responseError: function (rejection) {
-        var dfd, cachedData;
+        var dfd, cachedData, cacheKey;
 
         if (rejection.config && rejection.config.lscacheExtra) {
-          cachedData = rejection.config.lscacheExtra.cachedData;
+          cacheKey = getCacheKey(rejection.config);
 
-          if (!cachedData) {
-            // We failed for another reason, and did not have valid cached data.
-            // Look for expired cache data as a last resort
-            cachedData = lscacheExtra.get(getCacheKey(rejection.config), true, true);
-
-            if (cachedData) {
-              rejection.config.lscacheExtra.resultWasExpired = true;
-            }
-          }
-
-          // If available, use the cachedData we looked up in request(), which
-          // caused us to abort the request
-          if (cachedData) {
-            // Clean up after ourselves
-            delete rejection.config.lscacheExtra.cachedData;
-            rejection.config.lscacheExtra.resultWasCached = true;
+          if (rejection.config.lscacheExtra.pending) {
+            // This request was marked as pending because threre is already
+            // an identical request on the wire.  We want to jut wait for that
+            // request to return
+            delete rejection.config.lscacheExtra.pending;
             dfd = $q.defer();
-            dfd.resolve(generateResponse(cachedData, rejection.config));
+            pendingRequests[cacheKey].push(dfd);
             return dfd.promise;
-          }
 
-          return $q.reject(rejection);
+          } else {
+
+            cachedData = rejection.config.lscacheExtra.cachedData;
+
+            if (!cachedData) {
+              // We failed for another reason, and did not have valid cached data.
+              // Look for expired cache data as a last resort
+              cachedData = lscacheExtra.get(cacheKey, true, true);
+
+              if (cachedData) {
+                rejection.config.lscacheExtra.resultWasExpired = true;
+              }
+            }
+
+            // If available, use the cachedData we looked up in request(), which
+            // caused us to abort the request
+            if (cachedData) {
+              // Clean up after ourselves
+              delete rejection.config.lscacheExtra.cachedData;
+              rejection.config.lscacheExtra.resultWasCached = true;
+              dfd = $q.defer();
+              dfd.resolve(generateResponse(cachedData, rejection.config));
+              return dfd.promise;
+            }
+
+            return $q.reject(rejection);
+          }
         }
 
         return rejection;
