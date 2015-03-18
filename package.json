@@ -1,6 +1,6 @@
 {
   "name": "angular-http-lscache-interceptor",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Interceptor to provide the ability to cache angular $http requests with lscache-extra",
   "main": "src/angular-http-lscache-interceptor.js",
   "directories": {
