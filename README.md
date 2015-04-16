@@ -5,6 +5,7 @@
 *angular-http-lscache-interceptor* is an interceptor that caches [$http](https://docs.angularjs.org/api/ng/service/$http) requests, on an opt-in basis, in localStorage using [lscache-extra](https://github.com/brophdawg11/lscache-extra).  It is basically a port of [jquery.ajax.lscache](https://github.com/brophdawg11/jquery.ajax.lscache) for Angular.  Please check out the jquery.ajax.lscache documentation for a more complete description.
 
 #### Installation
+
 `bower install angular-http-lscache-interceptor`
 
 #### Example usage
@@ -42,3 +43,5 @@
 })();
 
 ```
+
+Pass the lscacheExtra object to create a cached request. Passing no lscacheExtra object will result in a non-cached request as usual.
