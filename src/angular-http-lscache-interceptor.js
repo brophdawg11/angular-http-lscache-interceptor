@@ -147,7 +147,7 @@
           }
         }
 
-        return rejection;
+        return $q.reject(rejection);
       }
     };
   }]);

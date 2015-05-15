@@ -231,18 +231,6 @@ describe('http-lscache-interceptor', function () {
     makeHttpRequest(uncachedCb, true);
   });
 
-  function makeHttpRequest(cb, flush) {
-    console.log('making http request');
-
-    // Make sure this is created fresh each time, otherwise properties will
-    // persist across calls
-    lsConfig = { key: 'key', ttl: 2, ttlUnitMs: 100 };
-
-    $httpBackend.expectGET(endpoint);
-    $http.get(endpoint, { lscacheExtra: lsConfig }).then(cb, err);
-    if (flush) { $httpBackend.flush(); }
-  }
-
   it('should reject other request types', function (done) {
     var errorHandler = {
       mockCb: function (err) {
