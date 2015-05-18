@@ -65,6 +65,7 @@ describe('http-lscache-interceptor', function () {
   var $injector,
       $http,
       $httpBackend,
+      $rootScope,
       httpProvider,
       mockedDate = mockDateObject(),
       lscacheExtra = mockLscacheExtra(mockedDate),
@@ -99,6 +100,7 @@ describe('http-lscache-interceptor', function () {
     $injector = _$injector_;
     $http = $injector.get('$http');
     $httpBackend = $injector.get('$httpBackend');
+    $rootScope = $injector.get('$rootScope');
 
     // Mock the endpoint
     $httpBackend.when('GET', endpoint)
@@ -229,4 +231,34 @@ describe('http-lscache-interceptor', function () {
     makeHttpRequest(uncachedCb, true);
   });
 
+  it('should reject other request types', function (done) {
+    var errorHandler = {
+      mockCb: function (err) {
+        done();
+      }
+    };
+    var mockData = {
+      foo: 'bar'
+    };
+    var mockResponse = {
+      baz: 'qux'
+    };
+
+    spyOn(errorHandler, 'mockCb').and.callThrough();
+
+    $httpBackend
+      .expectPOST(endpoint)
+      .respond(400, mockResponse);
+
+    $http
+      .post(endpoint, mockData)
+      .error(errorHandler.mockCb);
+
+    // force $q to resolve
+    $rootScope.$digest(function () {
+      expect(errorHandler.mockCb).toHaveBeenCalledWith(mockResponse);
+    });
+
+    $httpBackend.flush();
+  });
 });
