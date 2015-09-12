@@ -1,10 +1,20 @@
 ;(function () {
 
-  var module = window.angular.module('http-lscache-interceptor', [ 'lscacheExtra' ]);
+  // Register lscacheExtra as a module
+  angular.module('lscacheExtra', [])
+         .constant('lscacheExtra', window.lscache);
 
-  module.constant('pendingRequests', {});
+  // Register the interceptor
+  angular.module('http-lscache-interceptor', [ 'lscacheExtra' ])
+         .constant('pendingRequests', {})
+         .factory('http-lscache-interceptor',
+                  [ '$q',
+                    '$log',
+                    'lscacheExtra',
+                    'pendingRequests',
+                    httpLscacheInterceptor ]);
 
-  module.factory('http-lscache-interceptor', [ '$q', '$log', 'lscacheExtra', 'pendingRequests', function ($q, $log, lscacheExtra, pendingRequests) {
+  function httpLscacheInterceptor($q, $log, lscacheExtra, pendingRequests) {
 
     function getCacheKey(config) {
       var cacheKey;
@@ -150,6 +160,6 @@
         return $q.reject(rejection);
       }
     };
-  }]);
+  }
 
 })();

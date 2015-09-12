@@ -3,14 +3,23 @@
 
   <head>
     <script src="../bower_components/angular/angular.js"></script>
-    <script src="../bower_components/lscache-extra/lscache-extra.js"></script>
+    <script src="../bower_components/lscache-extra/lscache.js"></script>
     <script src="../src/angular-http-lscache-interceptor.js"></script>
     <script src="app.js"></script>
   </head>
 
   <body ng-app="app" ng-strict-di>
     <div id="ctrl" ng-controller="ctrl">
-      <h1>Data: {{ data }}</h1>
+      <button ng-click="fetchData()">Fetch Data</button>
+      <p style="max-width: 600px;">
+        Each set of fetched data will appear below, indicating if it was
+        served from the cache or not.  The cache is set to expire after
+        5 seconds.  Look at the network requests to see the canceled
+        API requests.
+      </p>
+      <p ng-repeat="result in results track by $index">
+        {{result}}
+      </p>
     </div>
   </body>
 
