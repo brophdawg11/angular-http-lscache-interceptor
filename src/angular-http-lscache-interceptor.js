@@ -1,8 +1,14 @@
 ;(function () {
 
   // Register lscacheExtra as a module
-  angular.module('lscacheExtra', [])
-         .constant('lscacheExtra', window.lscache);
+  if (window.lscache) {
+      angular.module('lscacheExtra', [])
+             .constant('lscacheExtra', window.lscache);
+  } else {
+      console.error('ERROR: No lscache module found, did you forget to ' +
+                    'include the bower_components/lscache-extra/lscache.js ' +
+                    'file?');
+  }
 
   // Register the interceptor
   angular.module('http-lscache-interceptor', [ 'lscacheExtra' ])
