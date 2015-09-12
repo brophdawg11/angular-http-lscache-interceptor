@@ -8,6 +8,14 @@
 
 `bower install angular-http-lscache-interceptor`
 
+#### Demo
+
+For a live demo, clone this repository and run:
+
+`npm install && bower install && python -m SimpleHTTPServer`
+
+The load `http://localhost:8000/demo/` in your browser
+
 #### Example usage
 
 ```javascript
